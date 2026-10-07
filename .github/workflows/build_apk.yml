@@ -13,11 +13,12 @@ jobs:
           distribution: temurin
           java-version: 21
           cache: gradle
-      - uses: android-actions/setup-android@v3
       - name: Install NDK
-        run: yes | sdkmanager "ndk;29.0.13846066" "platforms;android-35" "build-tools;35.0.0" || true
+        run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null || true
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "ndk;29.0.13846066" "platforms;android-35" "build-tools;35.0.0"
       - run: chmod +x ./gradlew
-      - name: Build release (optimized) and debug (fallback)
+      - name: Build release and debug
         run: ./gradlew :app:assembleRelease :app:assembleDebug --no-daemon
       - uses: actions/upload-artifact@v4
         with:
